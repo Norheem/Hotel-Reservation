@@ -94,9 +94,6 @@ public class MainMenu {
         Date currentDate;
 //        input.nextLine();
         try {
-
-            // currentDate =  date.parse(date.format(calendar.getTime()));
-                    //date.parse(date.format(calendar.getTime()));
             currentDate = date.parse(date.format(calendar.getTime()));
             System.out.println("Enter your check-In Date MM/dd/yyy: ");
             checkInDate = date.parse(input.nextLine());
@@ -104,10 +101,12 @@ public class MainMenu {
             System.out.println("Enter your check-Out Date MM/dd/yyy: ");
             checkOutDate = date.parse(input.nextLine());
             System.out.println(checkOutDate);
+            //AdminMenu.seeAllRooms();
             if (!checkInDate.before(currentDate) && !checkOutDate.before(checkInDate)) {
                 Collection<IRoom> rooms = HotelResource.getInstance().findARoom(checkInDate, checkOutDate);
                 rooms.forEach(System.out::println);
                 if (rooms != null) {
+
                     do {
                         System.out.println("Would you like to book a room? \n" +
                                 "Enter Y or N");
@@ -120,12 +119,12 @@ public class MainMenu {
                                 if (account.equalsIgnoreCase("y")) {
                                     input.nextLine();
                                     System.out.println("Enter your email in this format: name@domain.com: ");
-                                     email = input.nextLine();
+                                     email = input.next();
                                     Customer customer = HotelResource.customerService.getCustomer(email);
                                      if (HotelResource.customerService.getCustomer(email) != null) {
                                          System.out.println("What room number would you like to reserve? ");
                                          rooms.forEach(System.out::println);
-                                         String roomNum = input.nextLine();
+                                         String roomNum = input.next();
                                          if (HotelResource.getRoom(roomNum) == null) {
                                              System.out.println("Room not available. \n" +
                                                     " Try to reserve another room");
@@ -138,14 +137,20 @@ public class MainMenu {
                                                  if (!rooms.contains(roomNumObject)) {
                                                      HotelResource.bookARoom(customer.getEmail(), roomNumObject, checkInDate, checkOutDate);
                                                      System.out.println("Room " + roomNum + " is " +
-                                                             " Reserved for customer: " + customer + "\n");
+                                                             " Reserved for customer: " + customer + "\n" + "Your check in date is " +
+                                                             checkInDate + " and your check out date is " + checkOutDate);
+                                                     //findAndReserveARoom();
                                                  } else {
-                                                     System.out.println("Your alredy book the room before");
+                                                     System.out.println("Your already book the room before");
                                                  }
-                                             } catch (IllegalArgumentException ex) {
-                                                 System.out.println(ex.getLocalizedMessage());
+                                             } catch (Exception e) {
+                                                 System.out.println(e.getLocalizedMessage());
                                                  findAndReserveARoom();
                                              }
+//                                             catch (IllegalArgumentException ex) {
+//                                                 System.out.println(ex.getLocalizedMessage());
+////                                                 findAndReserveARoom();
+//                                             }
 ////                                             } else {
 //                                                 System.out.println("Room " + roomNum + " is already reserve " +
 //                                                         " please select another room");
@@ -158,7 +163,7 @@ public class MainMenu {
                                          System.out.println("No account found\n " +
                                                  "You need to create a new account");
                                          createAnAccount();
-                                         findAndReserveARoom();
+//                                         findAndReserveARoom();
                                      }
                                      mainPanel();
                                 }else if (account.equalsIgnoreCase("n")) {
@@ -217,12 +222,13 @@ public class MainMenu {
         System.out.println("Do you have an account? \n If no, create your account now");
         System.out.println("CREATING AN ACCOUNT");
         System.out.println("----------------------------------");
+        input.nextLine();
         System.out.println("Enter your email address format: name@domain.com...");
-        String email = input.next();
+        String email = input.nextLine();
         System.out.println("Enter your first name: ");
-        final String firstName = input.next();
+        final String firstName = input.nextLine();
         System.out.println("Enter your last name:");
-        final String lastName = input.next();
+        final String lastName = input.nextLine();
 
         try {
             HotelResource.getInstance().createACustomer(email, firstName, lastName);
@@ -232,7 +238,7 @@ public class MainMenu {
             findAndReserveARoom();
         } catch (IllegalArgumentException ex) {
             System.out.println(ex.getLocalizedMessage());
-            createAnAccount();
+            //createAnAccount();
         }
     }
 
